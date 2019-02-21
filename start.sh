@@ -1,7 +1,7 @@
 #!/bin/sh
 set -e
 
-export POLEMARCH_SETTINGS_FILE /data/conf/settings.ini
+export POLEMARCH_SETTINGS_FILE=/data/conf/settings.ini
 
 mkdir -p /data/conf /data/db /data/logs /data/cache /data/locks /data/projects /data/hooks
 
@@ -12,4 +12,4 @@ fi
 
 /usr/local/bin/polemarchctl migrate
 
-exec /usr/local/bin/polemarchctl webserver
+exec /usr/bin/supervisord -c /etc/supervisord.conf

@@ -6,18 +6,20 @@ RUN set -x && apk add --no-cache --virtual .build-deps gcc make libffi-dev musl-
 FROM python:3.6-alpine
 
 COPY --from=base /root/.cache /root/.cache
+COPY settings.ini /root/settings.ini.dist
+COPY start.sh /start.sh
+COPY supervisord.conf /etc/supervisord.conf
+
 RUN set -x \
   && pip3 install -U polemarch \
   && rm -rf /root/.cache \
-  && apk add --update --no-cache git sshpass libuuid mailcap \
-  && mkdir -p /var/run/polemarch /data
+  && apk add --update --no-cache git sshpass libuuid mailcap dcron supervisor \
+  && mkdir -p /var/run/polemarch /data \
+  && chmod +x /start.sh
 
-COPY settings.ini /root/settings.ini.dist
-COPY start.sh /start.sh
 
 VOLUME ["/data"]
 
 EXPOSE 8080
 
-ENTRYPOINT ["/bin/ash", "/start.sh"]
-
+ENTRYPOINT ["/start.sh"]
